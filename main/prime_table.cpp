@@ -1,7 +1,7 @@
 /* generate all prime numbers in [1, n], and store them in prime[] in ascending order. */
 /* cnt stands for the number of primes generated. */
-/* time complexity: O(n*loglogn) */
-/* space compleity: O(n) */
+/* time  complexity: O(n*loglogn) */
+/* space complexity: O(n) */
 
 int prime[MAX];
 int cnt = 0;
