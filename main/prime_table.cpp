@@ -3,15 +3,15 @@
 /* time complexity: O(n*loglogn) */
 /* space compleity: O(n) */
 
-int _visited[i] = {0};
 int prime[MAX];
 int cnt = 0;
 void prime_table(int n){
+    int visited[MAX] = {0};
     for(int i=2; i<=n; ++i){
         if(!visited[i]){
             prime[cnt++] = i;
             for (int j=i*i; j<=n; j+=i)
-                _visited[j] = 1;
+                visited[j] = 1;
         }
-    } 
+    }
 }
