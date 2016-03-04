@@ -22,7 +22,6 @@ bool shortest_path_bellman_ford(int n, int source){
         for(int j=0; j<n; ++j){
             for(int cur=head[j]; cur!=-1; cur=e[cur].nxt){
                 int y = e[cur].y;
-                if(y == source) continue;
                 if(dist[j] != INF && dist[y] > dist[j] + e[cur].c){
                     dist[y] = dist[j] + e[cur].c;
                     updated = true;
@@ -35,4 +34,3 @@ bool shortest_path_bellman_ford(int n, int source){
     if(i == n) return false;
     return true;
 }
-
