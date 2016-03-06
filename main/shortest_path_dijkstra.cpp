@@ -6,10 +6,10 @@
 /* n               : number of vertex. */
 /* MAX_N           : max number of vertex. */
 /* source          : source point */
-/* d[0..n]      : dist[i].dis stands for shortest distance from source to i */
+/* d[0..n]         : d[i].dis stands for shortest distance from source to i */
 /* usage           : 
       call shortest_path_dijkstra(n, source) and 
-      store shortest distances in dist[].dis.
+      store shortest distances in d[].dis.
 */
 struct dist{
     bool operator<(const dist& b) const{
