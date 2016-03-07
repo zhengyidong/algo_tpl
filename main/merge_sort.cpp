@@ -5,7 +5,10 @@
 /* a[0..N-1]         :original array */
 /* c[0..N-1]         :augxiliary array */
 /* num_inverse_pairs :number of inverse pairs in original array */
-/*                    init to 0 if use it. */
+/*                    init to 0 if use it.
+ *                    NOTE that for a decreasing sequence, the number of inverse pairs
+ *                    is n(n-1)/2, which may not be in the range of 32-bit integer, so 
+ *                    long long int is recommended. */
 void merge_sort(int l, int r){
     int mid, i, j, tmp;
     if(r > l + 1){
@@ -16,7 +19,7 @@ void merge_sort(int l, int r){
         for(i=l, j=mid; i<mid&&j<r; ){
             if(a[i] > a[j]){
                 c[tmp++] = a[j++];
-                num_inverse_pairs += mid - i; //
+                num_inverse_pairs += mid - i; // comment this line if don't use it.
             }
             else c[tmp++] = a[i++];
         }
