@@ -1,5 +1,5 @@
 /* Dijkstra shortest path using adjacent list. */
-/* check ajacent_list.cpp to see usage of ajacent list. */
+/* check ajacency_list.cpp to see usage of ajacent list. */
 /* time  complexity: O(ElogE) */
 /* space complexity: O(E) */
 /* INF             : infinity */

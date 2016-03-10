@@ -3,6 +3,7 @@
 /* space complexity: O(1) */
 /* usage             :just use it. */
 int C(int n, int m){
+    if(m > n - m) m = n - m;
     int ans = 1;
     for(int i=0; i<m; ++i){
       ans *= n - i;
