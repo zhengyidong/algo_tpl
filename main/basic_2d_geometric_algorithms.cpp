@@ -89,3 +89,8 @@ void intersection_points_c2c(const circle& c1, const circle& c2,
     v.y = u.y - c1.c.x + c2.c.x;
     intersection_points_l2c(c1, u, v, p1, p2);
 }
+
+// cross product of (p1 - p0) and (p2 - p0)
+double cross_product(const point& p1, const point& p2, const point& p0) {
+    return((p1.x-p0.x) * (p2.y-p0.y) - (p2.x-p0.x) * (p1.y-p0.y));
+}
