@@ -7,7 +7,7 @@ struct circle{
 };
 // compare two double value with maximum relative error EPS(epsilon).
 bool lt(double x, double y){ return x < y - EPS; }
-bool gt(double x, double y){ return x > y - EPS; }
+bool gt(double x, double y){ return x > y + EPS; }
 bool nlt(double x, double y){ return x > y - EPS; }
 bool ngt(double x, double y){ return x < y + EPS; }
 bool eq(double x, double y){ return fabs(x - y) < EPS; }
@@ -93,4 +93,40 @@ void intersection_points_c2c(const circle& c1, const circle& c2,
 // cross product of (p1 - p0) and (p2 - p0)
 double cross_product(const point& p1, const point& p2, const point& p0) {
     return((p1.x-p0.x) * (p2.y-p0.y) - (p2.x-p0.x) * (p1.y-p0.y));
+}
+
+/* Graham's scan for convex hull. */
+/* pnt[0..n-1]      :point set */
+/* time complexity  : O(nlogn) */
+/* space complexity : O(n) */
+/* n                :number of points */
+/* res[0..n-1]      :vertex of convex hull in counterclockwise order */
+/* usage            :
+ *     1. the sort strategy used here:
+              sorted by y-axis and sorted by x-axis if the y-aixs is the same.
+              e.g.
+                bool operator<(const point& a, const point& b){
+                    return a.y == b.y ? a.x < b.x : a.y < b.y;
+                }
+       2. call grahams_scan(pnt, n, res);
+       3. function returns number of vertex in convex hull and store
+          them in res[] in counterclockwise order.
+*/
+int grahams_scan(point pnt[], int n, point res[]){
+    int i, len, top = 1;
+    sort(pnt, pnt + n);
+    if (n == 0) return 0; res[0] = pnt[0];
+    if (n == 1) return 1; res[1] = pnt[1];
+    if (n == 2) return 2; res[2] = pnt[2];
+    for (i = 2; i<n; ++i){
+        while (top && cross_product(pnt[i], res[top], res[top-1]) >= 0)
+            top--;
+        res[++top] = pnt[i];
+    }
+    len = top; res[++top] = pnt[n - 2];
+    for (i = n - 3; i >= 0; i--) {
+        while (top!=len && cross_product(pnt[i], res[top], res[top-1]) >= 0) top--;
+        res[++top] = pnt[i];
+    }
+    return top; // number of vertex of convex hull.
 }
