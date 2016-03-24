@@ -20,6 +20,23 @@ bool operator<(const point& a, const point& b){
 double distance_p2p(const point& p1, const point& p2){
     return hypot(p1.x - p2.x, p1.y - p2.y);
 }
+
+
+// check if two lines intersect
+bool is_intersect_l2l(const point& u1, const point& u2,
+                      const point& v1, const point& v2){
+    return !eq(0, ((u1.x - u2.x)*(v1.y - v2.y) - (u1.y - u2.y)*(v1.x - v2.x)));
+}
+
+// check if the circle and the line intersect
+bool is_intersect_l2c(const circle& c, const point& l1, const point& l2){
+    point p = c.c;
+    p.x += l1.y - l2.y;
+    p.y += l2.x - l1.x;
+    p = intersection_point_l2l(p, c.c, l1, l2);
+    return nlt(c.r, distance_p2p(p, c.c));
+}
+
 // check if two cirles intersect
 bool is_intersect_c2c(const circle& a, const circle& b){
     return lt(distance_p2p(a.c, b.c), a.r + b.r)
