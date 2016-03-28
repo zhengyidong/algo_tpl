@@ -158,7 +158,7 @@ double dot_product(const point& p1, const point& p2, const point& p0){
        2. call grahams_scan(pnt, n, res);
        3. function returns number of vertex in convex hull and store
           them in res[] in counterclockwise order.
-    NOTE that you can change the comparison from '>=' to '>' to obtain
+    NOTE that you can change the comparison from 'nlt(>=)' to 'gt(>)' to obtain
     all the points on the boundary of convex hull including non-vertex points.
 */
 int grahams_scan(point pnt[], int n, point res[]){
@@ -168,13 +168,13 @@ int grahams_scan(point pnt[], int n, point res[]){
     if (n == 1) return 1; res[1] = pnt[1];
     if (n == 2) return 2; res[2] = pnt[2];
     for (i = 2; i<n; ++i){
-        while (top && cross_product(pnt[i], res[top], res[top-1]) >= 0) // use > to obtain all points on boundary
+        while (top && nlt(cross_product(pnt[i], res[top], res[top-1]), 0)) // use gt() to obtain all points on boundary
             top--;
         res[++top] = pnt[i];
     }
     len = top; res[++top] = pnt[n - 2];
     for (i = n - 3; i >= 0; i--) {
-        while (top!=len && cross_product(pnt[i], res[top], res[top-1]) >= 0) top--; // use > to obtain all points on boundary
+        while (top!=len && nlt(cross_product(pnt[i], res[top], res[top-1]), 0)) top--; // use gt() to obtain all points on boundary
         res[++top] = pnt[i];
     }
     return top; // number of vertex of convex hull.
