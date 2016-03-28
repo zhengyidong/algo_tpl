@@ -22,6 +22,11 @@ double distance_p2p(const point& p1, const point& p2){
 }
 
 
+// check if point p is on line segment (u, v)
+bool is_point_on_segment(const point& p, const point& u, const point& v){
+    return eq(0, cross_product(u, v, p)) && ngt(dot_product(u, v, p), 0);
+}
+
 // check if two lines intersect
 bool is_intersect_l2l(const point& u1, const point& u2,
                       const point& v1, const point& v2){
@@ -107,9 +112,26 @@ void intersection_points_c2c(const circle& c1, const circle& c2,
     intersection_points_l2c(c1, u, v, p1, p2);
 }
 
+// check if two line segments (u1, u2) and (v1, v2) intersect
+// NOTE that two segments on the same line is not
+// considered intersect even if they overlap.
+bool is_intersect_s2s(const point& u1, const point& u2,
+                      const point& v1, const point& v2){
+    if(!is_intersect_l2l(u1, u2, v1, v2)){
+        return false;
+    }
+    point p = intersection_point_l2l(u1, u2, v1, v2);
+    return is_point_on_segment(p, u1, u2) && is_point_on_segment(p, v1, v2);
+}
+
 // cross product of (p1 - p0) and (p2 - p0)
 double cross_product(const point& p1, const point& p2, const point& p0) {
-    return((p1.x-p0.x) * (p2.y-p0.y) - (p2.x-p0.x) * (p1.y-p0.y));
+    return ((p1.x-p0.x) * (p2.y-p0.y) - (p2.x-p0.x) * (p1.y-p0.y));
+}
+
+// dot product of (p1 - p0) and (p2 - p0);
+double dot_product(const point& p1, const point& p2, const point& p0){
+    return ((p1.x-p0.x) * (p2.x-p0.x) + (p1.y-p0.y) * (p2.y-p0.y));
 }
 
 /* Graham's scan for convex hull. */
@@ -147,3 +169,43 @@ int grahams_scan(point pnt[], int n, point res[]){
     }
     return top; // number of vertex of convex hull.
 }
+
+/* simple polygon */
+/* TODO(zyidong.zheng@gmail.com): for now it's only usage is to test if a point is in this polygon. New functions
+ * will be added. */
+/* It's valid only if the polygon is simple(including convex and concave polygons) */
+/* usage            :
+ * 1. number of vertices should be passed to constructor first.
+ * 2. the actual vertices should be assigned use overloaded [] operator and SHOULD BE in clockwise order or counterclockwise order.
+ * 3. after 1 and 2, just use it.
+*/
+class polygon{
+public:
+    polygon(int num_vertices):_num_vertices(num_vertices){}
+    point& operator[](int index){
+        return _vertices[index];
+    }
+    // check if point p in the polygon.
+    // 0 when p is on the outside
+    // 1 when p is on the inside
+    // 2 when p is on the edge
+    int is_in(const point& p){
+        int num = 0;
+        _vertices[_num_vertices] = _vertices[0];
+        for(int i=0; i<_num_vertices; ++i){
+            if(is_point_in_segement(p, _vertices[i], _vertices[i+1]))
+                return 2;
+            double k = cross_product(p, _vertices[i+1], _vertices[i]);
+            if(gt(k, 0)
+               && ngt(_vertices[i].y - p.y, 0)
+               && gt(_vertices[i+1].y - p.y, 0)) ++num;
+            if(lt(k, 0)
+               && gt(_vertices[i].y - p.y, 0)
+               && ngt(_vertices[i+1].y - p.y, 0)) --num;
+        }
+        return num != 0;
+    }
+private:
+    int _num_vertices;
+    point _vertices[MAX_N];
+};
