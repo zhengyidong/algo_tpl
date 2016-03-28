@@ -21,6 +21,14 @@ double distance_p2p(const point& p1, const point& p2){
     return hypot(p1.x - p2.x, p1.y - p2.y);
 }
 
+// point-to-line distance
+double distance_p2l(const point& p, const point& l1, const point& l2){
+    point q = p;
+    q.x += l1.y - l2.y;
+    q.y += l2.x - l1.x;
+    q = intersection_point_l2l(q, p, l1, l2);
+    return distance_p2p(p, q);
+}
 
 // check if point p is on line segment (u, v)
 bool is_point_on_segment(const point& p, const point& u, const point& v){
@@ -33,7 +41,7 @@ bool is_intersect_l2l(const point& u1, const point& u2,
     return !eq(0, ((u1.x - u2.x)*(v1.y - v2.y) - (u1.y - u2.y)*(v1.x - v2.x)));
 }
 
-// check if the circle and the line intersect
+// check if the circle and the line intersect (including touch)
 bool is_intersect_l2c(const circle& c, const point& l1, const point& l2){
     point p = c.c;
     p.x += l1.y - l2.y;
@@ -150,6 +158,8 @@ double dot_product(const point& p1, const point& p2, const point& p0){
        2. call grahams_scan(pnt, n, res);
        3. function returns number of vertex in convex hull and store
           them in res[] in counterclockwise order.
+    NOTE that you can change the comparison from '>=' to '>' to obtain
+    all the points on the boundary of convex hull including non-vertex points.
 */
 int grahams_scan(point pnt[], int n, point res[]){
     int i, len, top = 1;
@@ -158,22 +168,23 @@ int grahams_scan(point pnt[], int n, point res[]){
     if (n == 1) return 1; res[1] = pnt[1];
     if (n == 2) return 2; res[2] = pnt[2];
     for (i = 2; i<n; ++i){
-        while (top && cross_product(pnt[i], res[top], res[top-1]) >= 0)
+        while (top && cross_product(pnt[i], res[top], res[top-1]) >= 0) // use > to obtain all points on boundary
             top--;
         res[++top] = pnt[i];
     }
     len = top; res[++top] = pnt[n - 2];
     for (i = n - 3; i >= 0; i--) {
-        while (top!=len && cross_product(pnt[i], res[top], res[top-1]) >= 0) top--;
+        while (top!=len && cross_product(pnt[i], res[top], res[top-1]) >= 0) top--; // use > to obtain all points on boundary
         res[++top] = pnt[i];
     }
     return top; // number of vertex of convex hull.
 }
 
 /* simple polygon */
-/* TODO(zyidong.zheng@gmail.com): for now it's only usage is to test if a point is in this polygon. New functions
+/* TODO(zyidong.zheng@gmail.com): for now it's only usage is to test if a point/circle is in this polygon. New functions
  * will be added. */
-/* It's valid only if the polygon is simple(including convex and concave polygons) */
+/* is_in(const point& p) is valid only if the polygon is simple(including convex and concave polygons) */
+/* is_in(const circle& c) is valid only if the polygon is convex */
 /* usage            :
  * 1. number of vertices should be passed to constructor first.
  * 2. the actual vertices should be assigned use overloaded [] operator and SHOULD BE in clockwise order or counterclockwise order.
@@ -185,7 +196,7 @@ public:
     point& operator[](int index){
         return _vertices[index];
     }
-    // check if point p in the polygon.
+    // check if point p is within the polygon.
     // 0 when p is on the outside
     // 1 when p is on the inside
     // 2 when p is on the edge
@@ -193,7 +204,7 @@ public:
         int num = 0;
         _vertices[_num_vertices] = _vertices[0];
         for(int i=0; i<_num_vertices; ++i){
-            if(is_point_in_segement(p, _vertices[i], _vertices[i+1]))
+            if(is_point_on_segment(p, _vertices[i], _vertices[i+1]))
                 return 2;
             double k = cross_product(p, _vertices[i+1], _vertices[i]);
             if(gt(k, 0)
@@ -204,6 +215,18 @@ public:
                && ngt(_vertices[i+1].y - p.y, 0)) --num;
         }
         return num != 0;
+    }
+    // check if circle c is within the polygon.
+    // INVALID if the polygon is not convex.
+    bool is_in(const circle& c){
+        if(!is_in(c.c)) return false;
+        _vertices[_num_vertices] = _vertices[0];
+        for(int i=0; i<_num_vertices; ++i){
+            if(lt(distance_p2l(c.c, _vertices[i], _vertices[i+1]), c.r)){
+                return false;
+            }
+        }
+        return true;
     }
 private:
     int _num_vertices;
