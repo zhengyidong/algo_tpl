@@ -6,11 +6,11 @@ struct circle{
     double r;
 };
 // compare two double value with maximum relative error EPS(epsilon).
-bool lt(double x, double y){ return x < y - EPS; }
-bool gt(double x, double y){ return x > y + EPS; }
-bool nlt(double x, double y){ return x > y - EPS; }
-bool ngt(double x, double y){ return x < y + EPS; }
-bool eq(double x, double y){ return fabs(x - y) < EPS; }
+inline bool lt(double x, double y){ return x < y - EPS; }
+inline bool gt(double x, double y){ return x > y + EPS; }
+inline bool nlt(double x, double y){ return x > y - EPS; }
+inline bool ngt(double x, double y){ return x < y + EPS; }
+inline bool eq(double x, double y){ return fabs(x - y) < EPS; }
 
 bool operator<(const point& a, const point& b){
     return eq(a.x, b.x) ? lt(a.y, b.y) : lt(a.x, b.x);
