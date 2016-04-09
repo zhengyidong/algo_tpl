@@ -4,7 +4,7 @@
 /* space complexity: O(E + V) */
 /* MAX_M            : maximum number of edges */
 /* m                : number of edges */
-/* ed               : edges */
+/* ed[0..m-1]       : edges */
 /* s                : disjoint set. check
  *                    disjoint_set.cpp for usage. */
 /* edge::x, edge::y : the endpoints of edge */
@@ -22,7 +22,7 @@ struct edge{
 
 bool on_tree[MAX_M];
 
-int msp_kruskal(){
+int mst_kruskal(){
     memset(on_tree, false, sizeof(on_tree));
 
     sort(ed, ed + m, [](const edge& e1, const edge& e2){
