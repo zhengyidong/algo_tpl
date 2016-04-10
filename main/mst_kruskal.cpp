@@ -2,8 +2,10 @@
 /* use lambda for convenience. */
 /* time  complexity: O(ElogV) */
 /* space complexity: O(E + V) */
+/* INF              : MST is INF(infinity) means that the graph is not connected*/
 /* MAX_M            : maximum number of edges */
 /* m                : number of edges */
+/* n                : number of vertices */
 /* ed[0..m-1]       : edges */
 /* s                : disjoint set. check
  *                    disjoint_set.cpp for usage. */
@@ -31,15 +33,18 @@ int mst_kruskal(){
 
     disjoint_set s;
     int ans = 0;
+	int num_edges;
 
     for(int i=0; i<m; ++i){
         if(s.find(ed[i].x) != s.find(ed[i].y)){
             s.merge(ed[i].x, ed[i].y);
             on_tree[i] = true;
             ans += ed[i].c;
+			++num_edges;
             // ans = max(ans, ed[i].c); for bottleneck spanning tree
         }
     }
+	if(num_edges != n - 1) return INF;
 
     return ans;
 }
