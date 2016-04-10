@@ -33,14 +33,14 @@ int mst_kruskal(){
 
     disjoint_set s;
     int ans = 0;
-	int num_edges;
+    int num_edges = 0;
 
     for(int i=0; i<m; ++i){
         if(s.find(ed[i].x) != s.find(ed[i].y)){
             s.merge(ed[i].x, ed[i].y);
             on_tree[i] = true;
             ans += ed[i].c;
-			++num_edges;
+            ++num_edges;
             // ans = max(ans, ed[i].c); for bottleneck spanning tree
         }
     }
