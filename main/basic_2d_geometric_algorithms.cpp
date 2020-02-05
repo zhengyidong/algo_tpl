@@ -190,7 +190,7 @@ int grahams_scan(point pnt[], int n, point res[]){
  * 2. the actual vertices should be assigned use overloaded [] operator and SHOULD BE in clockwise order or counterclockwise order.
  * 3. after 1 and 2, just use it.
 */
-class polygon{
+class polygon {
 public:
     polygon(int num_vertices):_num_vertices(num_vertices){}
     point& operator[](int index){
